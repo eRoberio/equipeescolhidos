@@ -1,16 +1,67 @@
-# thechosenrankin
+<p align="center">
+	<img src="assets/thechosen.png" alt="Equipe Escolhidos" height="96" />
+</p>
 
-A new Flutter project.
+# Equipe Escolhidos — The Chosen Ranking
 
-## Getting Started
+Aplicativo Flutter da Equipe Escolhidos para acompanhamento de rankings, pontos e vendas, com gráficos dinâmicos, relatórios e integração com Firebase. Compatível com Android, iOS, Web e Desktop.
 
-This project is a starting point for a Flutter application.
+## Visão Geral
+- Gestão de lançamentos e pontuações dos colportores.
+- Gráficos em pizza (fl_chart) para visualizar participação de cada colportor.
+- Ranking de Vendas (R$) e Ranking Geral (Pontos).
+- Autenticação e fluxo de login/logout.
+- Relatórios diários e painel de metas.
 
-A few resources to get you started if this is your first Flutter project:
+## Principais Funcionalidades
+- Ranking de Vendas (R$) e de Pontos.
+- Visualização por gráficos: [lib/charts_page.dart](lib/charts_page.dart).
+- Dashboard de metas: [lib/goal_dashboard.dart](lib/goal_dashboard.dart) e [lib/goal_widgets.dart](lib/goal_widgets.dart).
+- Relatórios e lançamentos: [lib/daily_report_page.dart](lib/daily_report_page.dart), [lib/lancamentos_page.dart](lib/lancamentos_page.dart), [lib/lancamento_colportor_page.dart](lib/lancamento_colportor_page.dart).
+- Login e navegação: [lib/login_page.dart](lib/login_page.dart), [lib/main.dart](lib/main.dart).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Tecnologias
+- Flutter (UI multi-plataforma).
+- Firebase (Firestore, Auth). Arquivos já presentes como [android/app/google-services.json](android/app/google-services.json) e configurações em iOS/web.
+- `fl_chart` para visualização dos dados.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Como Executar
+Pré-requisitos:
+- Flutter SDK (instalação oficial: https://docs.flutter.dev/get-started/install)
+- Ambiente com pelo menos um dispositivo/alvo (Chrome, Android, iOS, Windows, etc.)
+
+Instalação de dependências:
+```bash
+flutter pub get
+```
+
+Rodar em diferentes plataformas (exemplos):
+```bash
+# Web (Chrome)
+flutter run -d chrome
+
+# Android (emulador ou device)
+flutter run -d android
+
+# Windows Desktop
+flutter run -d windows
+```
+
+## Configuração do Firebase
+- Android: já configurado via `google-services.json` em [android/app/google-services.json](android/app/google-services.json).
+- iOS: arquivos de configuração presentes em [ios/Runner](ios/Runner) e [ios/Flutter](ios/Flutter).
+- Web: arquivo [firebase.json](firebase.json) e artefatos em [build/web](build/web). Caso use seu próprio projeto Firebase, atualize os arquivos de configuração e regras do Firestore conforme sua necessidade.
+
+## Estrutura do Projeto
+- Código principal: [lib](lib)
+	- Ponto de entrada: [lib/main.dart](lib/main.dart)
+	- Páginas de gráficos: [lib/charts_page.dart](lib/charts_page.dart)
+	- Ranking: [lib/ranking_page.dart](lib/ranking_page.dart), [lib/ranking_geral_page.dart](lib/ranking_geral_page.dart)
+- Ativos: [assets](assets) (inclui `thechosen.png`)
+- Web build: [build/web](build/web)
+
+## Contribuição
+Contribuições são bem-vindas! Abra um issue com sugestões/bugs e envie PRs com melhorias. Agradecimentos à comunidade e à Equipe Escolhidos pelo apoio.
+
+## Créditos
+Feito com carinho pela Equipe Escolhidos. 💙
