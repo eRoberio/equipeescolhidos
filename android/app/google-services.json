@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "600560999206",
+    "project_id": "thechosen-2432f",
+    "storage_bucket": "thechosen-2432f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600560999206:android:c4b72be9797da5cc947fe7",
+        "android_client_info": {
+          "package_name": "com.example.thechosenrankin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2naYhASRdNdxMTVtRe2o_jGtW3nxPExk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
