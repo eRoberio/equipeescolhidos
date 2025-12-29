@@ -30,30 +30,41 @@ class _DailyReportPageState extends State<DailyReportPage> {
 
   Future<void> _carregarNomeUsuario() async {
     try {
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(widget.userId).get();
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.userId)
+              .get();
       if (userDoc.exists && userDoc.data() != null) {
         setState(() {
-          _colportorNome = (userDoc.data() as Map<String, dynamic>)['nome'] as String?;
+          _colportorNome =
+              (userDoc.data() as Map<String, dynamic>)['nome'] as String?;
         });
       }
     } catch (_) {}
   }
 
-  String _dateKey(DateTime d) => DateFormat('yyyyMMdd').format(DateTime(d.year, d.month, d.day));
+  String _dateKey(DateTime d) =>
+      DateFormat('yyyyMMdd').format(DateTime(d.year, d.month, d.day));
 
   DateTime _startOfDay(DateTime d) => DateTime(d.year, d.month, d.day);
-  DateTime _endOfDay(DateTime d) => DateTime(d.year, d.month, d.day).add(const Duration(days: 1));
+  DateTime _endOfDay(DateTime d) =>
+      DateTime(d.year, d.month, d.day).add(const Duration(days: 1));
 
   Future<void> _carregarConsolidadoVendas() async {
     try {
       final start = _startOfDay(_date);
       final end = _endOfDay(_date);
-      final snaps = await FirebaseFirestore.instance
-          .collection('lancamentos')
-          .where('colportorId', isEqualTo: widget.userId)
-          .where('timestamp', isGreaterThanOrEqualTo: Timestamp.fromDate(start))
-          .where('timestamp', isLessThan: Timestamp.fromDate(end))
-          .get();
+      final snaps =
+          await FirebaseFirestore.instance
+              .collection('lancamentos')
+              .where('colportorId', isEqualTo: widget.userId)
+              .where(
+                'timestamp',
+                isGreaterThanOrEqualTo: Timestamp.fromDate(start),
+              )
+              .where('timestamp', isLessThan: Timestamp.fromDate(end))
+              .get();
       double total = 0;
       for (final d in snaps.docs) {
         final v = (d['valor'] ?? 0).toDouble();
@@ -69,12 +80,16 @@ class _DailyReportPageState extends State<DailyReportPage> {
     try {
       final start = _startOfDay(_date);
       final end = _endOfDay(_date);
-      final snaps = await FirebaseFirestore.instance
-          .collection('lancamentos')
-          .where('colportorId', isEqualTo: widget.userId)
-          .where('timestamp', isGreaterThanOrEqualTo: Timestamp.fromDate(start))
-          .where('timestamp', isLessThan: Timestamp.fromDate(end))
-          .get();
+      final snaps =
+          await FirebaseFirestore.instance
+              .collection('lancamentos')
+              .where('colportorId', isEqualTo: widget.userId)
+              .where(
+                'timestamp',
+                isGreaterThanOrEqualTo: Timestamp.fromDate(start),
+              )
+              .where('timestamp', isLessThan: Timestamp.fromDate(end))
+              .get();
       double total = 0;
       for (final d in snaps.docs) {
         final v = (d['valor'] ?? 0).toDouble();
@@ -89,11 +104,17 @@ class _DailyReportPageState extends State<DailyReportPage> {
   Future<void> _carregarRelatorioExistente() async {
     try {
       final key = '${widget.userId}_${_dateKey(_date)}';
-      final doc = await FirebaseFirestore.instance.collection('relatorios_diarios').doc(key).get();
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('relatorios_diarios')
+              .doc(key)
+              .get();
       if (doc.exists && doc.data() != null) {
         final data = doc.data() as Map<String, dynamic>;
         // Só preenche se o usuário ainda não começou a digitar
-        if (_ofertasCtrl.text.isEmpty && _horasCtrl.text.isEmpty && _vendasCtrl.text.isEmpty) {
+        if (_ofertasCtrl.text.isEmpty &&
+            _horasCtrl.text.isEmpty &&
+            _vendasCtrl.text.isEmpty) {
           setState(() {
             _ofertasCtrl.text = (data['ofertas'] ?? 0).toString();
             _horasCtrl.text = (data['horas'] ?? 0).toString();
@@ -108,9 +129,10 @@ class _DailyReportPageState extends State<DailyReportPage> {
     final ofertas = int.tryParse(_ofertasCtrl.text.trim());
     final horas = double.tryParse(_horasCtrl.text.replaceAll(',', '.').trim());
     final vendasText = _vendasCtrl.text.trim();
-    final vendas = vendasText.isEmpty
-        ? 0.0
-        : double.tryParse(vendasText.replaceAll(',', '.'));
+    final vendas =
+        vendasText.isEmpty
+            ? 0.0
+            : double.tryParse(vendasText.replaceAll(',', '.'));
 
     if (ofertas == null || ofertas < 0) {
       setState(() => _erro = 'Informe a quantidade de ofertas (0 ou mais).');
@@ -121,34 +143,47 @@ class _DailyReportPageState extends State<DailyReportPage> {
       return;
     }
     if (vendas == null || vendas < 0) {
-      setState(() => _erro = 'Informe o valor das vendas (0 ou mais). Campo pode ficar em branco.');
+      setState(
+        () =>
+            _erro =
+                'Informe o valor das vendas (0 ou mais). Campo pode ficar em branco.',
+      );
       return;
     }
 
-    setState(() { _erro = null; _loading = true; });
+    setState(() {
+      _erro = null;
+      _loading = true;
+    });
     try {
       final key = '${widget.userId}_${_dateKey(_date)}';
-      await FirebaseFirestore.instance.collection('relatorios_diarios').doc(key).set({
-        'colportorId': widget.userId,
-        'colportorNome': _colportorNome,
-        'data': Timestamp.fromDate(DateTime(_date.year, _date.month, _date.day)),
-        'dataKey': _dateKey(_date),
-        'ofertas': ofertas,
-        'horas': horas,
-        'vendas': vendas,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection('relatorios_diarios')
+          .doc(key)
+          .set({
+            'colportorId': widget.userId,
+            'colportorNome': _colportorNome,
+            'data': Timestamp.fromDate(
+              DateTime(_date.year, _date.month, _date.day),
+            ),
+            'dataKey': _dateKey(_date),
+            'ofertas': ofertas,
+            'horas': horas,
+            'vendas': vendas,
+            'updatedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
 
       // Sincroniza com ranking somente se o campo de vendas foi preenchido
       if (vendasText.isNotEmpty) {
         final somaLancDia = await _sumVendasDoDia();
         final delta = vendas - somaLancDia;
         final lancRef = FirebaseFirestore.instance.collection('lancamentos');
-        final ajusteSnap = await lancRef
-            .where('colportorId', isEqualTo: widget.userId)
-            .where('dailyKey', isEqualTo: key)
-            .limit(1)
-            .get();
+        final ajusteSnap =
+            await lancRef
+                .where('colportorId', isEqualTo: widget.userId)
+                .where('dailyKey', isEqualTo: key)
+                .limit(1)
+                .get();
         if (ajusteSnap.docs.isNotEmpty) {
           final doc = ajusteSnap.docs.first.reference;
           if (delta.abs() < 0.0001) {
@@ -194,7 +229,9 @@ class _DailyReportPageState extends State<DailyReportPage> {
     } catch (e) {
       setState(() => _erro = 'Erro ao salvar: $e');
     } finally {
-      setState(() { _loading = false; });
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -206,7 +243,9 @@ class _DailyReportPageState extends State<DailyReportPage> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null) {
-      setState(() { _date = picked; });
+      setState(() {
+        _date = picked;
+      });
       await _carregarConsolidadoVendas();
       await _carregarRelatorioExistente();
     }
@@ -240,16 +279,17 @@ class _DailyReportPageState extends State<DailyReportPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Image.asset('assets/thechosen.png', height: 72),
-              ),
+              Center(child: Image.asset('assets/thechosen.png', height: 72)),
               const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: Text(
                       'Data: ${DateFormat('dd/MM/yyyy').format(_date)}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   OutlinedButton.icon(
@@ -272,7 +312,9 @@ class _DailyReportPageState extends State<DailyReportPage> {
               const SizedBox(height: 16),
               TextField(
                 controller: _horasCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Horas trabalhadas no campo',
                   border: OutlineInputBorder(),
@@ -282,7 +324,9 @@ class _DailyReportPageState extends State<DailyReportPage> {
               const SizedBox(height: 16),
               TextField(
                 controller: _vendasCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Valor total de vendas (consolidado)',
                   border: OutlineInputBorder(),
@@ -305,16 +349,22 @@ class _DailyReportPageState extends State<DailyReportPage> {
               ],
               ElevatedButton.icon(
                 icon: const Icon(Icons.save),
-                label: _loading ? const Text('Salvando...') : const Text('Salvar'),
+                label:
+                    _loading ? const Text('Salvando...') : const Text('Salvar'),
                 onPressed: _loading ? null : _salvar,
-                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                ),
               ),
               const SizedBox(height: 24),
               const Divider(),
               const SizedBox(height: 8),
-              const Text('Meus relatórios recentes', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Relatórios do dia selecionado',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
-              _MeusRelatoriosList(userId: widget.userId),
+              _MeusRelatoriosList(userId: widget.userId, date: _date),
               const SizedBox(height: 24),
               const Divider(),
               const SizedBox(height: 8),
@@ -333,7 +383,8 @@ class _DailyReportPageState extends State<DailyReportPage> {
 
 class _MeusRelatoriosList extends StatefulWidget {
   final String userId;
-  const _MeusRelatoriosList({required this.userId});
+  final DateTime date;
+  const _MeusRelatoriosList({required this.userId, required this.date});
 
   @override
   State<_MeusRelatoriosList> createState() => _MeusRelatoriosListState();
@@ -347,11 +398,12 @@ class _MeusRelatoriosListState extends State<_MeusRelatoriosList> {
     super.initState();
     // Evita necessidade de índice composto (where + orderBy) e flicker:
     // carrega os últimos N e filtra por usuário no cliente.
-    _stream = FirebaseFirestore.instance
-        .collection('relatorios_diarios')
-        .orderBy('data', descending: true)
-        .limit(60)
-        .snapshots();
+    _stream =
+        FirebaseFirestore.instance
+            .collection('relatorios_diarios')
+            .orderBy('data', descending: true)
+            .limit(60)
+            .snapshots();
   }
 
   @override
@@ -375,10 +427,16 @@ class _MeusRelatoriosListState extends State<_MeusRelatoriosList> {
           return const Text('Nenhum relatório encontrado.');
         }
         final all = snap.data!.docs;
-        final docs = all.where((d) {
-          final data = d.data() as Map<String, dynamic>;
-          return data['colportorId'] == widget.userId;
-        }).toList();
+        final String dateKey = DateFormat('yyyyMMdd').format(
+          DateTime(widget.date.year, widget.date.month, widget.date.day),
+        );
+        final docs =
+            all.where((d) {
+              final data = d.data() as Map<String, dynamic>;
+              final uidOk = data['colportorId'] == widget.userId;
+              final keyOk = (data['dataKey'] ?? '') == dateKey;
+              return uidOk && keyOk;
+            }).toList();
         if (docs.isEmpty) {
           return const Text('Nenhum relatório encontrado.');
         }
@@ -398,7 +456,9 @@ class _MeusRelatoriosListState extends State<_MeusRelatoriosList> {
             return Card(
               child: ListTile(
                 title: Text('Dia $dia'),
-                subtitle: Text('Ofertas: $ofertas  •  Horas: ${horas.toStringAsFixed(2)}'),
+                subtitle: Text(
+                  'Ofertas: $ofertas  •  Horas: ${horas.toStringAsFixed(2)}',
+                ),
                 trailing: Text('R\$ ${vendas.toStringAsFixed(2)}'),
               ),
             );

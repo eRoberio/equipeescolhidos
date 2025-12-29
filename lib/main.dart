@@ -3,12 +3,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'ranking_page.dart';
 import 'ranking_geral_page.dart';
 import 'charts_page.dart';
+import 'ranking_ofertas_page.dart';
+import 'ranking_horas_page.dart';
 import 'package:thechosenrankin/relatorio_page.dart';
 import 'goal_dashboard.dart';
 import 'lancamentos_page.dart';
 import 'nova_campanha_page.dart';
 import 'login_page.dart';
 import 'daily_report_page.dart';
+import 'semana_maxima_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -250,6 +253,28 @@ class HomeMenuPage extends StatelessWidget {
                               },
                             ),
                             _MenuTile(
+                              icon: Icons.list_alt,
+                              title: 'Ranking de Ofertas',
+                              subtitle: 'Quantidade de ofertas realizadas',
+                              color: colorPrimary,
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const RankingOfertasPage()),
+                                );
+                              },
+                            ),
+                            _MenuTile(
+                              icon: Icons.timelapse,
+                              title: 'Ranking de Horas',
+                              subtitle: 'Horas trabalhadas no campo',
+                              color: colorPrimary,
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const RankingHorasPage()),
+                                );
+                              },
+                            ),
+                            _MenuTile(
                               icon: Icons.star,
                               title: 'Ranking Geral',
                               subtitle: 'Pontuações agregadas',
@@ -268,6 +293,17 @@ class HomeMenuPage extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(builder: (_) => const ChartsPage()),
+                                );
+                              },
+                            ),
+                            _MenuTile(
+                              icon: Icons.calendar_today,
+                              title: 'Semana Máxima',
+                              subtitle: role == UserRole.admin ? 'Configurar período e ver ranking' : 'Ranking da semana máxima',
+                              color: colorPrimary,
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => SemanaMaximaPage(role: role)),
                                 );
                               },
                             ),
