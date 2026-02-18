@@ -65,3 +65,17 @@ Contribuições são bem-vindas! Abra um issue com sugestões/bugs e envie PRs c
 
 ## Créditos
 Feito com carinho pela Equipe Escolhidos. 💙
+
+<img width="528" height="599" alt="image" src="https://github.com/user-attachments/assets/0b6df10a-96cf-4873-bf61-2fb644e1f881" />
+
+<img width="861" height="823" alt="image" src="https://github.com/user-attachments/assets/78bc146f-bef9-4fd6-811a-1e301142fb81" />
+
+<img width="861" height="823" alt="image" src="https://github.com/user-attachments/assets/ab7bf73b-171c-4b6c-8db6-afb84bbc7610" />
+
+<img width="1911" height="339" alt="image" src="https://github.com/user-attachments/assets/038627bf-6d82-4361-b281-108ee77abfcf" />
+
+<img width="795" height="363" alt="image" src="https://github.com/user-attachments/assets/fac52369-eb67-4907-8c63-984066b21bd3" />
+
+<img width="1121" height="300" alt="image" src="https://github.com/user-attachments/assets/34386826-9dae-4204-bdc9-c0aab5625277" />
+
+
