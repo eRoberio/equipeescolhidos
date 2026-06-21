@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:thechosenrankin/cadastro_page.dart';
 
 enum UserRole { admin, colportor }
 
@@ -24,46 +25,67 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     _formKey.currentState?.save();
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       // Busca usuário no Firestore
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(_userId).get();
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(_userId)
+              .get();
       if (!userDoc.exists || userDoc.data() == null) {
-        setState(() { _error = 'Usuário não cadastrado!'; _loading = false; });
+        setState(() {
+          _error = 'Usuário não cadastrado!';
+          _loading = false;
+        });
         return;
       }
       final data = userDoc.data() as Map<String, dynamic>;
       final isAdmin = data['isAdmin'] == true;
       final senhaSalva = data['senha'] as String?;
       if (senhaSalva == null || senhaSalva != _password) {
-        setState(() { _error = 'Senha incorreta!'; _loading = false; });
+        setState(() {
+          _error = 'Senha incorreta!';
+          _loading = false;
+        });
         return;
       }
       // Se usuário marcou ADMIN mas não tem permissão
       if (_role == UserRole.admin && !isAdmin) {
-        setState(() { _error = 'Usuário não possui permissão de ADMIN.'; _loading = false; });
+        setState(() {
+          _error = 'Usuário não possui permissão de ADMIN.';
+          _loading = false;
+        });
         return;
       }
       // Se usuário marcou COLPORTOR mas é admin, permite acesso como admin
       final role = isAdmin ? UserRole.admin : UserRole.colportor;
       widget.onLogin(_userId, role);
     } catch (e) {
-      setState(() { _error = 'Erro ao autenticar: $e'; });
+      setState(() {
+        _error = 'Erro ao autenticar: $e';
+      });
     } finally {
-      setState(() { _loading = false; });
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final baseTextTheme = GoogleFonts.interTextTheme(Theme.of(context).textTheme);
+    final baseTextTheme = GoogleFonts.interTextTheme(
+      Theme.of(context).textTheme,
+    );
     final colorPrimary = const Color(0xFF00695C);
     final colorPrimaryDark = const Color(0xFF004D40);
     final colorSurface = Colors.white;
 
     return Scaffold(
-      body: Container
-        (
+      body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [colorPrimaryDark, const Color(0xFF1B5E57)],
@@ -77,8 +99,14 @@ class _LoginPageState extends State<LoginPage> {
             inputDecorationTheme: const InputDecorationTheme(
               filled: true,
               fillColor: Color(0xFFF5F7F9),
-              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)), borderSide: BorderSide.none),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           child: Stack(
@@ -93,9 +121,14 @@ class _LoginPageState extends State<LoginPage> {
                       child: Card(
                         elevation: 10,
                         color: colorSurface,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 28,
+                          ),
                           child: Form(
                             key: _formKey,
                             child: Column(
@@ -106,20 +139,25 @@ class _LoginPageState extends State<LoginPage> {
                                 Center(
                                   child: Column(
                                     children: [
-                                      Image.asset('assets/thechosen.png', height: 56),
+                                      Image.asset(
+                                        'assets/thechosen.png',
+                                        height: 56,
+                                      ),
                                       const SizedBox(height: 16),
                                       Text(
                                         'Acesso Seguro',
-                                        style: baseTextTheme.titleLarge?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: colorPrimaryDark,
-                                        ),
+                                        style: baseTextTheme.titleLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: colorPrimaryDark,
+                                            ),
                                         textAlign: TextAlign.center,
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
                                         'Entre para continuar ao painel',
-                                        style: baseTextTheme.bodyMedium?.copyWith(color: Colors.black54),
+                                        style: baseTextTheme.bodyMedium
+                                            ?.copyWith(color: Colors.black54),
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -134,7 +172,11 @@ class _LoginPageState extends State<LoginPage> {
                                     labelText: 'Usuário ou ID',
                                     prefixIcon: Icon(Icons.person_outline),
                                   ),
-                                  validator: (v) => v == null || v.isEmpty ? 'Informe seu usuário' : null,
+                                  validator:
+                                      (v) =>
+                                          v == null || v.isEmpty
+                                              ? 'Informe seu usuário'
+                                              : null,
                                   onSaved: (v) => _userId = v ?? '',
                                   textInputAction: TextInputAction.next,
                                 ),
@@ -149,10 +191,20 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   value: _role,
                                   items: const [
-                                    DropdownMenuItem(value: UserRole.colportor, child: Text('COLPORTOR')),
-                                    DropdownMenuItem(value: UserRole.admin, child: Text('ADMIN')),
+                                    DropdownMenuItem(
+                                      value: UserRole.colportor,
+                                      child: Text('COLPORTOR'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: UserRole.admin,
+                                      child: Text('ADMIN'),
+                                    ),
                                   ],
-                                  validator: (v) => v == null ? 'Selecione o perfil' : null,
+                                  validator:
+                                      (v) =>
+                                          v == null
+                                              ? 'Selecione o perfil'
+                                              : null,
                                   onChanged: (v) => setState(() => _role = v),
                                 ),
 
@@ -164,34 +216,59 @@ class _LoginPageState extends State<LoginPage> {
                                     labelText: 'Senha',
                                     prefixIcon: const Icon(Icons.lock_outline),
                                     suffixIcon: IconButton(
-                                      icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-                                      onPressed: () => setState(() => _obscure = !_obscure),
+                                      icon: Icon(
+                                        _obscure
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                      ),
+                                      onPressed:
+                                          () => setState(
+                                            () => _obscure = !_obscure,
+                                          ),
                                     ),
                                   ),
                                   obscureText: _obscure,
-                                  validator: (v) => v == null || v.isEmpty ? 'Informe a senha' : null,
+                                  validator:
+                                      (v) =>
+                                          v == null || v.isEmpty
+                                              ? 'Informe a senha'
+                                              : null,
                                   onSaved: (v) => _password = v ?? '',
-                                  onFieldSubmitted: (_) => _loading ? null : _submit(),
+                                  onFieldSubmitted:
+                                      (_) => _loading ? null : _submit(),
                                 ),
 
                                 const SizedBox(height: 18),
 
                                 if (_error != null) ...[
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFFFE5E7),
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: const Color(0xFFFFC2C6)),
+                                      border: Border.all(
+                                        color: const Color(0xFFFFC2C6),
+                                      ),
                                     ),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.error_outline, color: Color(0xFFD32F2F)),
+                                        const Icon(
+                                          Icons.error_outline,
+                                          color: Color(0xFFD32F2F),
+                                        ),
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
                                             _error!,
-                                            style: baseTextTheme.bodyMedium?.copyWith(color: const Color(0xFFD32F2F)),
+                                            style: baseTextTheme.bodyMedium
+                                                ?.copyWith(
+                                                  color: const Color(
+                                                    0xFFD32F2F,
+                                                  ),
+                                                ),
                                           ),
                                         ),
                                       ],
@@ -208,29 +285,49 @@ class _LoginPageState extends State<LoginPage> {
                                       backgroundColor: colorPrimary,
                                       foregroundColor: Colors.white,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
                                     onPressed: _loading ? null : _submit,
-                                    child: _loading
-                                        ? const SizedBox(
-                                            width: 22,
-                                            height: 22,
-                                            child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white)),
-                                          )
-                                        : Text('Entrar', style: baseTextTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+                                    child:
+                                        _loading
+                                            ? const SizedBox(
+                                              width: 22,
+                                              height: 22,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                      Colors.white,
+                                                    ),
+                                              ),
+                                            )
+                                            : Text(
+                                              'Entrar',
+                                              style: baseTextTheme.titleMedium
+                                                  ?.copyWith(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
                                   ),
                                 ),
 
                                 const SizedBox(height: 8),
 
-                                // TextButton(
-                                //   onPressed: () {
-                                //     Navigator.of(context).push(
-                                //       MaterialPageRoute(builder: (_) => const CadastroPage()),
-                                //     );
-                                //   },
-                                //   child: const Text('Não tem cadastro? Cadastre-se'),
-                                // ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const CadastroPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Não tem cadastro? Cadastre-se',
+                                  ),
+                                ),
                               ],
                             ),
                           ),
